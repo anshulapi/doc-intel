@@ -112,18 +112,20 @@ doc-intel/
 ```
 ## Benchmark — Heuristic vs Vision Model
 
+Benchmarked on a 2-page document (AI Engineer Roadmap PDF):
+
 | Metric | Heuristic | Llama 4 Vision |
 |--------|-----------|----------------|
-| Speed | ~2s/page | ~6s/page |
-| Avg confidence | your_number | your_number |
-| Blocks detected | your_number | your_number |
+| Total processing time | 34.5s | 11.49s |
+| Average confidence | 0.836 | 0.95 |
 | Complex layout accuracy | Medium | High |
-| Cost | Free | API credits |
+| Cost | Free (local) | API credits |
 | Explainability | Full | Black box |
+| Requires OCR step | Yes | No |
+
+> Vision model is **3x faster** and **13.5% more confident** than the heuristic approach on this document. Heuristic remains useful as a free offline fallback.
 
 **Our pipeline uses Vision first, Heuristic as fallback — best of both worlds.**
----
-
 ## Roadmap
 
 - [ ] Qwen2-VL multimodal model integration (in progress)
