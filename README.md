@@ -67,6 +67,7 @@ PDF → page images → OCR (text + coordinates) → layout classification → s
 | Schema validation | Pydantic v2 |
 | API | FastAPI + Uvicorn |
 | Language | Python 3.10 |
+| Layout analysis | Llama 4 Vision via Groq (multimodal) |
 
 ---
 
