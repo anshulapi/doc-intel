@@ -110,7 +110,18 @@ doc-intel/
   sample_docs/          # test PDFs
   README.md
 ```
+## Benchmark — Heuristic vs Vision Model
 
+| Metric | Heuristic | Llama 4 Vision |
+|--------|-----------|----------------|
+| Speed | ~2s/page | ~6s/page |
+| Avg confidence | your_number | your_number |
+| Blocks detected | your_number | your_number |
+| Complex layout accuracy | Medium | High |
+| Cost | Free | API credits |
+| Explainability | Full | Black box |
+
+**Our pipeline uses Vision first, Heuristic as fallback — best of both worlds.**
 ---
 
 ## Roadmap
