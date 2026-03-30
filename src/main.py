@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from pdf_ingestor import pdf_to_images
 from ocr_engine import extract_text_with_boxes, reader
 from layout_analyser import analyse_layout
+from vision_analyser import analyse_with_vision
 from schema_builder import build_document_result
 
 # ─────────────────────────────────────────────
@@ -100,8 +101,22 @@ async def parse_document(
         all_labelled_blocks = []
 
         for page in pages:
-            ocr_results = extract_text_with_boxes(page["image"])
-            labelled    = analyse_layout(page["image"], ocr_results)
+            # Try vision model first, fall back to heuristic if it fails
+            try:
+                print(f"Running vision analysis on page {page['page_number']}...")
+                labelled = analyse_with_vision(page["image"])
+
+                # If vision returns too few results, fall back to heuristic
+                if len(labelled) < 3:
+                    print("Vision returned few results, using heuristic fallback...")
+                    ocr_results = extract_text_with_boxes(page["image"])
+                    labelled    = analyse_layout(page["image"], ocr_results)
+
+            except Exception as e:
+                print(f"Vision failed ({e}), using heuristic fallback...")
+                ocr_results = extract_text_with_boxes(page["image"])
+                labelled    = analyse_layout(page["image"], ocr_results)
+
             all_labelled_blocks.append(labelled)
 
         # ── Step 4: Build structured JSON ──
@@ -119,7 +134,8 @@ async def parse_document(
                 "filename"        : file.filename,
                 "pages_processed" : len(pages),
                 "processing_time" : f"{elapsed}s",
-                "dpi_used"        : dpi
+                "dpi_used"        : dpi,
+                "analyser"        : "Llama4-Vision via Groq (multimodal)"
             },
             "result": result.model_dump()
         }
